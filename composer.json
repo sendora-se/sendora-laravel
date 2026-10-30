@@ -1,0 +1,76 @@
+{
+    "name": "sendora/sendora-laravel",
+    "description": "Sendora for Laravel: the API's clients in the container, with a facade, and Laravel's mail through the API.",
+    "license": "MIT",
+    "type": "library",
+    "keywords": [
+        "email",
+        "transactional email",
+        "laravel",
+        "sendora"
+    ],
+    "homepage": "https://sendora.se/docs",
+    "support": {
+        "email": "support@sendora.se",
+        "issues": "https://github.com/sendora-se/sendora-laravel/issues",
+        "source": "https://github.com/sendora-se/sendora-laravel",
+        "docs": "https://sendora.se/docs"
+    },
+    "require": {
+        "php": "^8.2",
+        "guzzlehttp/psr7": "^2.7",
+        "illuminate/contracts": "^12.0 || ^13.0",
+        "illuminate/http": "^12.0 || ^13.0",
+        "illuminate/mail": "^12.0 || ^13.0",
+        "illuminate/routing": "^12.0 || ^13.0",
+        "illuminate/support": "^12.0 || ^13.0",
+        "psr/http-client": "^1.0",
+        "psr/http-factory": "^1.1",
+        "psr/log": "^1.0 || ^2.0 || ^3.0",
+        "sendora/sendora-php": "^0.10",
+        "symfony/mailer": "^7.2 || ^8.0"
+    },
+    "require-dev": {
+        "ergebnis/composer-normalize": "^2.54",
+        "orchestra/testbench": "^10.0 || ^11.0",
+        "php-cs-fixer/shim": "^3.95",
+        "phpstan/phpstan": "^2.3",
+        "phpstan/phpstan-deprecation-rules": "^2.0",
+        "phpstan/phpstan-phpunit": "^2.0",
+        "phpstan/phpstan-strict-rules": "^2.0",
+        "phpunit/phpunit": "^11.5.50 || ^12.5.8 || ^13.4",
+        "psr/http-message": "^1.1 || ^2.0",
+        "shipmonk/composer-dependency-analyser": "^1.8",
+        "symfony/http-foundation": "^7.2 || ^8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Sendora\\Laravel\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Sendora\\Laravel\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "ergebnis/composer-normalize": true,
+            "php-http/discovery": false
+        },
+        "platform": {
+            "php": "8.2.0"
+        },
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "aliases": {
+                "Sendora": "Sendora\\Laravel\\Facades\\Sendora"
+            },
+            "providers": [
+                "Sendora\\Laravel\\SendoraServiceProvider"
+            ]
+        }
+    }
+}

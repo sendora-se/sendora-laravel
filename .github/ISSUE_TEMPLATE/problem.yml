@@ -1,0 +1,47 @@
+name: A problem or a question
+description: Something in the package that does not work as you expect, or a question about it.
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Everything you write here is public, and copies of it stay public after the issue is deleted. Never paste a key, a webhook secret, a recipient's address or a message's content. Put a placeholder in its place, such as `sk_live_...` or `someone@example.com`.
+
+        Report a vulnerability by mail to support@sendora.se, never here. Write in English or Swedish.
+  - type: input
+    id: package-version
+    attributes:
+      label: The package's version
+      description: '`composer show sendora/sendora-laravel` prints it.'
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: input
+    id: laravel-version
+    attributes:
+      label: Laravel's version
+      description: '`php artisan --version` prints it.'
+      placeholder: 12.40.0
+    validations:
+      required: true
+  - type: input
+    id: php-version
+    attributes:
+      label: PHP's version
+      description: '`php --version` prints it.'
+      placeholder: 8.4.14
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you ran, what you expected, and what happened instead. Include the exception's class and error code if there was one.
+    validations:
+      required: true
+  - type: checkboxes
+    id: nothing-private
+    attributes:
+      label: Nothing private
+      options:
+        - label: This issue holds no key, no webhook secret, no recipient's address and no message's content.
+          required: true
