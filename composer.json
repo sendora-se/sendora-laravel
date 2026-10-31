@@ -27,7 +27,7 @@
         "psr/http-client": "^1.0",
         "psr/http-factory": "^1.1",
         "psr/log": "^1.0 || ^2.0 || ^3.0",
-        "sendora/sendora-php": "^0.10",
+        "sendora/sendora-php": "^0.11",
         "symfony/mailer": "^7.2 || ^8.0"
     },
     "require-dev": {

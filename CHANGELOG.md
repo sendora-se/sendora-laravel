@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.0
+
+- Requires `sendora/sendora-php` 0.11, which removes the error code
+  `unpaid_limit_reached` and its amounts. Nothing in this package used
+  them.
+
 ## 0.1.0
 
 - `SendoraServiceProvider`, which Laravel finds by itself, puts the
