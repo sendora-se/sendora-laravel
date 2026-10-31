@@ -509,10 +509,12 @@ message's content.
 
 ## Versions
 
-The package follows semantic versioning, and stays below 1.0.0 for now.
-Until then a minor version may break. Each release requires the minor of
-`sendora/sendora-php` that it was tested with, and Composer installs it
-beside the package. `CHANGELOG.md` lists what each release changed.
+The package follows semantic versioning. A breaking change comes only in
+a major version: a renamed or removed class, method, setting or event, or
+a changed default. A minor adds them, and a patch fixes a bug. Each release
+requires the major of `sendora/sendora-php` that it was tested with, from
+1.0.0, and Composer installs it beside the package. `CHANGELOG.md` lists
+what each release changed.
 
 ## Docs
 

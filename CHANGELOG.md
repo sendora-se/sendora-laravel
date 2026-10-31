@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.0
+
+- The first stable release. From 1.0.0 on, only a new major version
+  breaks code written for the one before it: a renamed or removed
+  class, method, setting or event, or a changed default. A minor adds
+  them, and a patch fixes a bug. No code changes from 0.2.0.
+- It requires `sendora/sendora-php` 1.0.0 or a later 1.x release, so
+  each minor of the SDK reaches the app without a new release here.
+
 ## 0.2.0
 
 - Requires `sendora/sendora-php` 0.11, which removes the error code
