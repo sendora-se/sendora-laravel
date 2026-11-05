@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.1.0
+
+- The container holds `TrackingDomains`, the resource of the account client
+  that adds, lists, reads, checks and removes tracking domains. It requires
+  `sendora/sendora-php` 1.1.0 or a later 1.x release.
+
 ## 1.0.0
 
 - The first stable release. From 1.0.0 on, only a new major version

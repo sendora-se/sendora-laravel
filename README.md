@@ -234,8 +234,8 @@ final class DeliveryStatus
 ```
 
 The account client has no facade. Take `SendoraAccount` from the
-container, or one of its resources: `Domains`, `Erasures` for erasing an
-address's data, `Servers` and `ServerTokens`.
+container, or one of its resources: `Domains`, `TrackingDomains`, `Erasures`
+for erasing an address's data, `Servers` and `ServerTokens`.
 
 ## Webhooks
 
