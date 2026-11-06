@@ -13,11 +13,13 @@ use Psr\Log\LoggerInterface;
 use Sendora\Events\BouncedEvent;
 use Sendora\Events\CapReachedEvent;
 use Sendora\Events\CapWarningEvent;
+use Sendora\Events\ClickedEvent;
 use Sendora\Events\DeferredEvent;
 use Sendora\Events\DeliveredEvent;
 use Sendora\Events\InboundCapReachedEvent;
 use Sendora\Events\InboundCapWarningEvent;
 use Sendora\Events\InboundEvent;
+use Sendora\Events\OpenedEvent;
 use Sendora\Events\SpamComplaintEvent;
 use Sendora\Events\UnsubscribedEvent;
 use Sendora\Events\WebhookEvent;
@@ -27,9 +29,11 @@ use Sendora\Laravel\Events\CapWarning;
 use Sendora\Laravel\Events\InboundCapReached;
 use Sendora\Laravel\Events\InboundCapWarning;
 use Sendora\Laravel\Events\InboundEmailReceived;
+use Sendora\Laravel\Events\LinkClicked;
 use Sendora\Laravel\Events\MessageBounced;
 use Sendora\Laravel\Events\MessageDeferred;
 use Sendora\Laravel\Events\MessageDelivered;
+use Sendora\Laravel\Events\MessageOpened;
 use Sendora\Laravel\Events\RecipientUnsubscribed;
 use Sendora\Laravel\Events\SpamComplaintReceived;
 use Sendora\Laravel\Events\UnknownWebhookReceived;
@@ -111,6 +115,8 @@ final class WebhookController
             $webhook instanceof DeferredEvent => new MessageDeferred($webhook),
             $webhook instanceof SpamComplaintEvent => new SpamComplaintReceived($webhook),
             $webhook instanceof UnsubscribedEvent => new RecipientUnsubscribed($webhook),
+            $webhook instanceof OpenedEvent => new MessageOpened($webhook),
+            $webhook instanceof ClickedEvent => new LinkClicked($webhook),
             $webhook instanceof CapWarningEvent => new CapWarning($webhook),
             $webhook instanceof CapReachedEvent => new CapReached($webhook),
             $webhook instanceof InboundEvent => new InboundEmailReceived($webhook),

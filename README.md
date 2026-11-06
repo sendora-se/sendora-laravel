@@ -254,7 +254,8 @@ event for each.
    $secret = $webhook->secret; // shown this once
    ```
 
-   It receives every event, unless `events:` lists the ones it wants.
+   It receives every event except `opened` and `clicked`, unless `events:`
+   lists the ones it wants.
 
 2. Put the secret in `SENDORA_WEBHOOK_SECRET`, and deploy.
 3. If the app caches its config or its routes, run `config:cache` and
@@ -292,6 +293,8 @@ argument. `Event::listen()` registers one in a provider instead.
 | `deferred`            | `MessageDeferred`        | `DeferredEvent`          |
 | `spam_complaint`      | `SpamComplaintReceived`  | `SpamComplaintEvent`     |
 | `unsubscribed`        | `RecipientUnsubscribed`  | `UnsubscribedEvent`      |
+| `opened`              | `MessageOpened`          | `OpenedEvent`            |
+| `clicked`             | `LinkClicked`            | `ClickedEvent`           |
 | `cap_warning`         | `CapWarning`             | `CapWarningEvent`        |
 | `cap_reached`         | `CapReached`             | `CapReachedEvent`        |
 | `inbound`             | `InboundEmailReceived`   | `InboundEvent`           |

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.0
+
+- Two Laravel events, `MessageOpened` and `LinkClicked`, for the `opened` and
+  `clicked` webhooks. They require `sendora/sendora-php` 1.3.0 or a later 1.x
+  release.
+
 ## 1.1.0
 
 - The container holds `TrackingDomains`, the resource of the account client
