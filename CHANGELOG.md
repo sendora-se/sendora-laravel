@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.3.0
+
+- The container holds `TrackingOptOuts`, and the facade has `trackingOptOuts()`,
+  for a server's not-tracked list. It requires `sendora/sendora-php` 1.4.0 or a
+  later 1.x release.
+
 ## 1.2.0
 
 - Two Laravel events, `MessageOpened` and `LinkClicked`, for the `opened` and

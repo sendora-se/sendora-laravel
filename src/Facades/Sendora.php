@@ -14,6 +14,7 @@ use Sendora\Resources\Streams;
 use Sendora\Resources\Suppressions;
 use Sendora\Resources\ThisServer;
 use Sendora\Resources\Tokens;
+use Sendora\Resources\TrackingOptOuts;
 use Sendora\Resources\Webhooks;
 use Sendora\Sendora as Client;
 
@@ -70,6 +71,11 @@ final class Sendora extends Facade
     public static function tokens(): Tokens
     {
         return self::resource(Tokens::class);
+    }
+
+    public static function trackingOptOuts(): TrackingOptOuts
+    {
+        return self::resource(TrackingOptOuts::class);
     }
 
     public static function webhooks(): Webhooks

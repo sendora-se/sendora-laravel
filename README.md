@@ -198,7 +198,8 @@ final class ReceiptMail extends Mailable
 
 The `Sendora` facade reaches each resource of the server client:
 `broadcasts()`, `email()`, `inbound()`, `inboundDomains()`, `messages()`,
-`server()`, `streams()`, `suppressions()`, `tokens()` and `webhooks()`.
+`server()`, `streams()`, `suppressions()`, `tokens()`, `trackingOptOuts()`
+and `webhooks()`.
 
 ```php
 use Sendora\Laravel\Facades\Sendora;

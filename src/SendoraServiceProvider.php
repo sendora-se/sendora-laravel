@@ -33,6 +33,7 @@ use Sendora\Resources\Suppressions;
 use Sendora\Resources\ThisServer;
 use Sendora\Resources\Tokens;
 use Sendora\Resources\TrackingDomains;
+use Sendora\Resources\TrackingOptOuts;
 use Sendora\Resources\Webhooks;
 use Sendora\Sendora;
 use Sendora\SendoraAccount;
@@ -73,6 +74,7 @@ final class SendoraServiceProvider extends ServiceProvider
         $this->app->bind(Streams::class, static fn(Container $app): Streams => $app->make(Sendora::class)->streams);
         $this->app->bind(Suppressions::class, static fn(Container $app): Suppressions => $app->make(Sendora::class)->suppressions);
         $this->app->bind(Tokens::class, static fn(Container $app): Tokens => $app->make(Sendora::class)->tokens);
+        $this->app->bind(TrackingOptOuts::class, static fn(Container $app): TrackingOptOuts => $app->make(Sendora::class)->trackingOptOuts);
         $this->app->bind(Webhooks::class, static fn(Container $app): Webhooks => $app->make(Sendora::class)->webhooks);
         $this->app->bind(Domains::class, static fn(Container $app): Domains => $app->make(SendoraAccount::class)->domains);
         $this->app->bind(TrackingDomains::class, static fn(Container $app): TrackingDomains => $app->make(SendoraAccount::class)->trackingDomains);
