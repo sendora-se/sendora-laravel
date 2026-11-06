@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.4.0
+
+- A Laravel event, `RecipientOptedOut`, for the `tracking_opted_out` webhook. It
+  requires `sendora/sendora-php` 1.5.0 or a later 1.x release.
+
 ## 1.3.0
 
 - The container holds `TrackingOptOuts`, and the facade has `trackingOptOuts()`,

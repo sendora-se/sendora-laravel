@@ -21,6 +21,7 @@ use Sendora\Events\InboundCapWarningEvent;
 use Sendora\Events\InboundEvent;
 use Sendora\Events\OpenedEvent;
 use Sendora\Events\SpamComplaintEvent;
+use Sendora\Events\TrackingOptedOutEvent;
 use Sendora\Events\UnsubscribedEvent;
 use Sendora\Events\WebhookEvent;
 use Sendora\Exception\WebhookVerificationException;
@@ -34,6 +35,7 @@ use Sendora\Laravel\Events\MessageBounced;
 use Sendora\Laravel\Events\MessageDeferred;
 use Sendora\Laravel\Events\MessageDelivered;
 use Sendora\Laravel\Events\MessageOpened;
+use Sendora\Laravel\Events\RecipientOptedOut;
 use Sendora\Laravel\Events\RecipientUnsubscribed;
 use Sendora\Laravel\Events\SpamComplaintReceived;
 use Sendora\Laravel\Events\UnknownWebhookReceived;
@@ -117,6 +119,7 @@ final class WebhookController
             $webhook instanceof UnsubscribedEvent => new RecipientUnsubscribed($webhook),
             $webhook instanceof OpenedEvent => new MessageOpened($webhook),
             $webhook instanceof ClickedEvent => new LinkClicked($webhook),
+            $webhook instanceof TrackingOptedOutEvent => new RecipientOptedOut($webhook),
             $webhook instanceof CapWarningEvent => new CapWarning($webhook),
             $webhook instanceof CapReachedEvent => new CapReached($webhook),
             $webhook instanceof InboundEvent => new InboundEmailReceived($webhook),

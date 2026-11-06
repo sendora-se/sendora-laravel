@@ -296,6 +296,7 @@ argument. `Event::listen()` registers one in a provider instead.
 | `unsubscribed`        | `RecipientUnsubscribed`  | `UnsubscribedEvent`      |
 | `opened`              | `MessageOpened`          | `OpenedEvent`            |
 | `clicked`             | `LinkClicked`            | `ClickedEvent`           |
+| `tracking_opted_out`  | `RecipientOptedOut`      | `TrackingOptedOutEvent`  |
 | `cap_warning`         | `CapWarning`             | `CapWarningEvent`        |
 | `cap_reached`         | `CapReached`             | `CapReachedEvent`        |
 | `inbound`             | `InboundEmailReceived`   | `InboundEvent`           |
