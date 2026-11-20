@@ -512,6 +512,18 @@ method, the path, the code and the wait. The route logs a refused
 delivery's code at debug level. Neither logs a key, an address or a
 message's content.
 
+## For coding agents
+
+The package ships guidelines and a skill for
+[Laravel Boost](https://laravel.com/docs/boost), with the rules of this
+README in short. Run `php artisan boost:install`, and choose
+`sendora/sendora-laravel` among the third-party packages. Boost adds the
+guidelines to your agent's instructions, and installs the skill as
+`sendora`. After you upgrade the package, `php artisan boost:update`
+brings in its new rules. Without Boost, point your agent at
+`vendor/sendora/sendora-laravel/resources/boost/skills/sendora/SKILL.md`
+or at this README.
+
 ## Versions
 
 The package follows semantic versioning. A breaking change comes only in

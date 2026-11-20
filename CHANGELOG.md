@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.5.0
+
+- Laravel Boost's guidelines and a skill, `sendora`, for coding agents. Choose
+  the package in `php artisan boost:install`, and Boost gives the agent the
+  rules of the README. No code changes.
+
 ## 1.4.0
 
 - A Laravel event, `RecipientOptedOut`, for the `tracking_opted_out` webhook. It
