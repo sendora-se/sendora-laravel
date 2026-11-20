@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.5.1
+
+- The package installs in a Laravel 13 app that has Guzzle 8, since it now
+  takes `guzzlehttp/psr7` 3 as well as 2. Before, `composer require` failed
+  there unless `-W` took Guzzle back to 7. No code changes.
+
 ## 1.5.0
 
 - Laravel Boost's guidelines and a skill, `sendora`, for coding agents. Choose
