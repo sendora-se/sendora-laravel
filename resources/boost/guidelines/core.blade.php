@@ -7,7 +7,7 @@
 - The sender, `MAIL_FROM_ADDRESS` or a mailable's own, must be on a domain that the account has verified.
 - The `tags` and `metadata` of a mailable's `Envelope` become the message's tag and metadata in Sendora. A message has one tag, so two different tags fail the send.
 - The facade `Sendora\Laravel\Facades\Sendora` reaches the server's resources, as in `Sendora::messages()->get($messageId)`. A class may take a resource from the container instead, such as `Sendora\Resources\Messages`.
-- Laravel retries a failed queued mail as a new send, which can send it twice. To stop that, set the header `X-Sendora-Idempotency-Key` in the mailable's `headers()` from an id of the app's own, such as the order's.
+- When the queue retries a job, the package does not send again a mail that went out on an earlier attempt, so add no guard of your own. A mail that comes out different on the retry, as an embedded image or a signed URL makes it, goes again. To send such a mail once, set the header `X-Sendora-Idempotency-Key` in the mailable's `headers()` from an id of the app's own, such as the order's.
 - Webhooks reach the package's route, `POST /sendora/webhook`, once `SENDORA_WEBHOOK_SECRET` holds the webhook's secret. Never write a controller of your own for them. Listen to the events in `Sendora\Laravel\Events`, such as `MessageBounced`, whose `webhook` property is the SDK's event.
 - Sendora waits 10 seconds for the route's answer, so queue slow work. A delivery can arrive more than once, so key its handling on `$event->webhook->id`.
 - In tests, `Mail::fake()` and `Event::fake()` work as usual. To fake the API, mock a resource class with `$this->mock()`, such as `Sendora\Resources\Email`. `Sendora::shouldReceive()` cannot work, since the client is final.

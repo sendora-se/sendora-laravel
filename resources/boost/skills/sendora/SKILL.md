@@ -76,17 +76,19 @@ are the complete reference.
   That mailer's mail goes on its server's default stream, unless the
   mailer sets `stream`.
 - The SDK gives every send an idempotency key, and repeats a call only
-  when repeating is safe. So add no retry loop of your own. Laravel
-  retries a failed queued mail as a new send, though, and the retry sends
-  it again if the first attempt went out. Set `X-Sendora-Idempotency-Key`
-  in the mailable's `headers()` from an id of the app's own, such as the
-  order's. The API remembers a key for 24 hours.
-- The idempotency key protects a retry only when the mailable renders
-  the same bytes each time. An embedded image gets a new content id on
-  each render, and a signed URL a new expiry. Then the API refuses the
-  reused key with `idempotency_key_mismatch`, and that retry fails
-  without sending. Inside a `failover` mailer, though, the next mailer
-  sends it again.
+  when repeating is safe. So add no retry loop of your own. Each mail of
+  a queued job goes under a key made from the job's id and the mail's
+  place in the job. So when Laravel's queue retries the job, a mail that
+  went out on an earlier attempt is not sent again, and `MessageSent`
+  carries the first message's id again. The API remembers a key for 24
+  hours. `sendora.job_idempotency` set to false turns this off.
+- A mail that comes out different on the retry goes again, as a new
+  message. An embedded image gets a new content id on each render, and a
+  signed URL a new expiry. To send such a mail once, set
+  `X-Sendora-Idempotency-Key` in the mailable's `headers()` from an id of
+  the app's own, such as the order's. A retry whose mail differs then
+  fails with `idempotency_key_mismatch`, without sending. Inside a
+  `failover` mailer, though, the next mailer sends it again.
 - A failed mail throws Symfony's `TransportException`, whose previous
   exception is the SDK's `Sendora\Exception\SendoraException`. A failed
   call through a client throws the `SendoraException` itself. Compare its

@@ -1,5 +1,21 @@
 # Changelog
 
+## 2.0.0
+
+- Each mail of a queued job goes under an idempotency key made from the
+  job's id and the mail's place in the job. So when Laravel's queue
+  retries the job, a mail that went out on an earlier attempt is not sent
+  again, and `MessageSent` carries the first message's id again. A mail
+  that comes out different on the retry goes as a new message, as before.
+  The setting `job_idempotency` set to false turns this off.
+- This changes a default, so it comes in a new major version. To
+  upgrade, run `composer require sendora/sendora-laravel:^2.0`. No code
+  changes. Turn `job_idempotency` off only if a job of yours sends the
+  same mail again on purpose on a later attempt, or if a listener of
+  `MessageSent` cannot take the same message id twice.
+- The package requires `illuminate/queue` and `symfony/mime`, which every
+  Laravel app has.
+
 ## 1.5.1
 
 - The package installs in a Laravel 13 app that has Guzzle 8, since it now

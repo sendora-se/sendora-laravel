@@ -31,6 +31,11 @@ return [
     // default transactional stream when not set. A mailer may name its own.
     'stream' => env('SENDORA_STREAM'),
 
+    // Each mail that a queued job sends goes under a key made from the job's
+    // id and the mail's place in the job. So when the queue retries the job,
+    // a mail that went out on an earlier attempt is not sent again.
+    'job_idempotency' => true,
+
     // The route `POST /sendora/webhook`, named `sendora.webhook`, which checks
     // each delivery's signature and fires its event. It exists only once a
     // secret is set; run `route:cache` again after you first set one.

@@ -7,9 +7,13 @@ namespace Sendora\Laravel;
 use GuzzleHttp\Psr7\HttpFactory;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Container\Container;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Foundation\CachesRoutes;
 use Illuminate\Contracts\Routing\Registrar;
 use Illuminate\Mail\MailManager;
+use Illuminate\Queue\Events\JobExceptionOccurred;
+use Illuminate\Queue\Events\JobProcessed;
+use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Support\ServiceProvider;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -18,6 +22,8 @@ use Psr\Log\LoggerInterface;
 use Sendora\Exception\InvalidArgumentException;
 use Sendora\Laravel\Http\WebhookController;
 use Sendora\Laravel\Http\WebhookSettings;
+use Sendora\Laravel\Mail\JobKeys;
+use Sendora\Laravel\Mail\JobKeyTransport;
 use Sendora\Mailer\SendoraTransport;
 use Sendora\Resources\Broadcasts;
 use Sendora\Resources\Domains;
@@ -44,9 +50,9 @@ use Symfony\Component\Mailer\Transport\TransportInterface;
  * container, built on first use from `config/sendora.php` with Laravel's
  * logger, so an app that never calls Sendora needs no key. The settings
  * publish under the tag `sendora-config`. The `sendora` mailer sends
- * Laravel's mail through the API, with the SDK's driver. Once a webhook
- * secret is set, the route `sendora.webhook` fires an event for each
- * delivery.
+ * Laravel's mail through the API, with the SDK's driver, and a queued
+ * job's mail under a key from the job. Once a webhook secret is set, the
+ * route `sendora.webhook` fires an event for each delivery.
  */
 final class SendoraServiceProvider extends ServiceProvider
 {
@@ -61,6 +67,7 @@ final class SendoraServiceProvider extends ServiceProvider
             $manager->extend('sendora', static fn(array $mailer): TransportInterface => self::transport($app, $mailer));
         });
 
+        $this->app->singleton(JobKeys::class);
         $this->app->singleton(Sendora::class, static fn(Container $app): Sendora => new Sendora(...self::options($app, 'token')));
         $this->app->singleton(SendoraAccount::class, static fn(Container $app): SendoraAccount => new SendoraAccount(...self::options($app, 'account_token')));
 
@@ -89,6 +96,19 @@ final class SendoraServiceProvider extends ServiceProvider
         if (!($this->app instanceof CachesRoutes && $this->app->routesAreCached())) {
             self::route($this->app);
         }
+        self::followJobs($this->app);
+    }
+
+    // Not JobAttempted, which the sync queue of Laravel 12.0 never fires.
+    private static function followJobs(Container $app): void
+    {
+        $events = $app->make(Dispatcher::class);
+        $events->listen(JobProcessing::class, static function (JobProcessing $event) use ($app): void {
+            $app->make(JobKeys::class)->started($event->job->uuid());
+        });
+        $events->listen([JobProcessed::class, JobExceptionOccurred::class], static function () use ($app): void {
+            $app->make(JobKeys::class)->ended();
+        });
     }
 
     /**
@@ -117,15 +137,27 @@ final class SendoraServiceProvider extends ServiceProvider
      *
      * @param array<array-key, mixed> $mailer the mailer's settings
      */
-    private static function transport(Container $app, array $mailer): SendoraTransport
+    private static function transport(Container $app, array $mailer): TransportInterface
     {
+        $config = $app->make(Repository::class);
+        $keyedByJob = self::jobIdempotency($config->get('sendora.job_idempotency', true));
         $ownKey = ($mailer['token'] ?? null) !== null;
         $client = $ownKey || ($mailer['base_url'] ?? null) !== null ? new Sendora(...self::options($app, 'token', $mailer)) : $app->make(Sendora::class);
         // The package's stream belongs to the package's server, so another server's key goes on that server's default.
         $stream = self::text($mailer['stream'] ?? null, "A sendora mailer's stream")
-            ?? ($ownKey ? null : self::text($app->make(Repository::class)->get('sendora.stream'), 'sendora.stream'));
+            ?? ($ownKey ? null : self::text($config->get('sendora.stream'), 'sendora.stream'));
+        $transport = new SendoraTransport($client, $stream);
 
-        return new SendoraTransport($client, $stream);
+        return $keyedByJob ? new JobKeyTransport($transport, $app->make(JobKeys::class)) : $transport;
+    }
+
+    private static function jobIdempotency(mixed $value): bool
+    {
+        if (!\is_bool($value)) {
+            throw new InvalidArgumentException('sendora.job_idempotency must be true or false.');
+        }
+
+        return $value;
     }
 
     /**

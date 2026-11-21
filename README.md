@@ -49,6 +49,7 @@ php artisan vendor:publish --tag=sendora-config
 | `max_retries`        |                          | 2; 0 turns retries off      |
 | `http_client`        |                          | none, so curl               |
 | `stream`             | `SENDORA_STREAM`         | the server's default stream |
+| `job_idempotency`    |                          | true; false turns it off    |
 | `webhook.enabled`    |                          | true                        |
 | `webhook.path`       |                          | `sendora/webhook`           |
 | `webhook.domain`     |                          | none, so any domain         |
@@ -63,6 +64,9 @@ php artisan vendor:publish --tag=sendora-config
   `Http::fake()` never sees their requests.
 - A stream is a lane of a server's mail, transactional or broadcast, with
   a suppression list of its own.
+- `job_idempotency` sends each mail of a queued job under a key from the
+  job, so that a retry of the job does not send it twice. "Queued mail"
+  below says when a mail goes again.
 - `webhook.secrets` takes several secrets, separated by commas, since
   each webhook has its own.
 
@@ -163,11 +167,29 @@ server's key.
 
 ### Queued mail
 
-The SDK sends each request under an idempotency key, so a retried request
-never sends twice. But Laravel retries a failed queued mail as a new
-send, under a new key. If the first attempt went out before it failed,
-the retry sends the mail again. Set `X-Sendora-Idempotency-Key` from an
-id of your own to stop that:
+When Laravel's queue retries a job, the mail that the job sent on an
+earlier attempt is not sent again. Each mail of a queued job goes under
+an idempotency key made from the job's id and the mail's place in the
+job. The job keeps its id on each retry, so the API answers the retry
+with the message that it accepted before. Laravel's `MessageSent` then
+carries that message's id again.
+
+That covers a queued mailable or notification, and the mail that a job
+of your own sends.
+
+- The API remembers a key for 24 hours. `queue:retry` keeps the job's
+  id, so it is covered within that time. A retry from Horizon's dashboard
+  gives the job a new id, and sends its mail again.
+- A mail goes again, as a new message, when it differs from the mail
+  that had its place in the job before. A mail differs when it renders
+  differently: an embedded image gets a new content id on each render,
+  and a signed URL a new expiry. It also differs when the job sends its
+  mails in another order.
+- Set `job_idempotency` to false to turn this off, so that each attempt
+  sends its mail again.
+
+To send a mail only once, even when it comes out different, set
+`X-Sendora-Idempotency-Key` from an id of your own:
 
 ```php
 use Illuminate\Mail\Mailable;
@@ -184,15 +206,11 @@ final class ReceiptMail extends Mailable
 }
 ```
 
-- The API remembers a key for 24 hours.
-- The key protects a retry only when the mailable renders the same bytes
-  each time. An embedded image gets a new content id on each render, and
-  a signed URL a new expiry.
-- Otherwise the API refuses the reused key with
-  `idempotency_key_mismatch`. The failure's message then says that the
-  mail went out on an earlier attempt, so that retry has nothing left to
-  send. Inside a `failover` mailer, though, the next mailer sends it
-  again.
+A mail with a key of its own keeps it, in a job or not. The API then
+refuses a retry whose mail differs, with `idempotency_key_mismatch`. The
+failure's message says that the mail went out on an earlier attempt, so
+that retry has nothing left to send. Inside a `failover` mailer, though,
+the next mailer sends it again.
 
 ## The clients
 
